@@ -176,6 +176,24 @@ def desviacion_estandar(matrizFloat, promedio):
     desviacion_estandar = np.sqrt(varianza)
     return desviacion_estandar
 
+def desviacion_estandar_columnas(matriz):
+    num_filas = len(matriz)
+    num_cols = len(matriz[0])
+    medias = [0.0] * num_cols
+    for fila in matriz:
+        for i in range(num_cols):
+            medias[i] += fila[i]
+    medias = [m / num_filas for m in medias]
+    varianzas = [0.0] * num_cols
+    for fila in matriz:
+        for i in range(num_cols):
+            varianzas[i] += (fila[i] - medias[i]) ** 2
+    desviaciones = []
+    for i in range(num_cols):
+        varianza_col = varianzas[i] / num_filas
+        desviaciones.append(varianza_col ** 0.5)
+    return np.array(desviaciones)
+
 def asimetria(matrizFloat):
     filas, columnas = matrizFloat.shape
     suma = 0.0
@@ -206,9 +224,8 @@ def calcular_descriptores(imagen):
 
 def normalizarDescriptores(descriptores):
     descriptores = np.array(descriptores)
-    #media = promedioDimensional(descriptores)
-    media = np.mean(descriptores)
-    desviacion_estandar = np.std(descriptores, axis=0)
+    media = promedioDimensional(descriptores)
+    desviacion_estandar = desviacion_estandar_columnas(descriptores)
     descriptores_normalizados = (descriptores - media) / desviacion_estandar
     return descriptores_normalizados
 
@@ -417,13 +434,21 @@ promCentroideC = promedioDimensional(centroideC)
 promCentroideD = promedioDimensional(centroideD)
 promCentroideE = promedioDimensional(centroideE)
 
+normCentroideA = normalizarDescriptores(centroideA)
+normCentroideB = normalizarDescriptores(centroideB)
+normCentroideC = normalizarDescriptores(centroideC)
+normCentroideD = normalizarDescriptores(centroideD)
+normCentroideE = normalizarDescriptores(centroideE)
 
-print("Promedio de los centroides:")
-print("Centroide A:", promCentroideA)
-print("Centroide B:", promCentroideB)
-print("Centroide C:", promCentroideC)
-print("Centroide D:", promCentroideD)
-print("Centroide E:", promCentroideE)
+
+print("Promedio de los centroides normalizados:")
+print("Centroide A:", normCentroideA)
+print("Centroide B:", normCentroideB)
+print("Centroide C:", normCentroideC)
+print("Centroide D:", normCentroideD)
+print("Centroide E:", normCentroideE)
+
+
 
 plt.show()
 
